@@ -30,7 +30,12 @@ import type { MDXComponents } from 'mdx/types'
  *  props from MDX (`<PricingTable plan="pro" />`). See
  *  `src/components/mdx/rich-content.tsx` for how the built-ins are written.
  */
+function NoEyebrow() {
+  return <style>{`.thally-docs-header .thally-docs-eyebrow { display: none; }`}</style>
+}
+
 export const customComponents: MDXComponents = {
+  NoEyebrow,
   // Add your components here, e.g.:
   // Highlight,
 }
