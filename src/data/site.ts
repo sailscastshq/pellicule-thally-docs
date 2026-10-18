@@ -101,16 +101,16 @@ const brandPresets: Record<BrandPresetKey, BrandConfig> = {
       muted: '#EFEFE9',
       mutedForeground: '#747B72',
       border: '#E5E6E1',
-      accent: '#007852',
+      accent: '#23734F',
       accentForeground: '#FFFFFF',
       accent2: '#755FBB',
       accent2Foreground: '#0B0A13',
       input: '#E5E6E1',
       sidebar: '#F7F7F2',
-      ring: '#397059',
+      ring: '#23734F',
       // Olive-family tint (the leaf's own green) for the active sidebar item
-      sidebarActiveBg: '68 40% 88% / 0.65',
-      sidebarActiveText: '#454A22',
+      sidebarActiveBg: '148 42% 94%',
+      sidebarActiveText: '#205F43',
     },
     dark: {
       background: '#040704',
@@ -119,15 +119,15 @@ const brandPresets: Record<BrandPresetKey, BrandConfig> = {
       muted: '#0E130F',
       mutedForeground: '#929C90',
       border: '#1B1E1A',
-      accent: '#BAE43E',
+      accent: '#42B883',
       accentForeground: '#101911',
       accent2: '#AC9CF0',
       accent2Foreground: '#0B0A13',
       input: '#29302A',
       sidebar: '#060906',
-      ring: '#BAE43E',
+      ring: '#42B883',
       sidebarActiveBg: '132 15% 6%',
-      sidebarActiveText: '#BAE43E',
+      sidebarActiveText: '#42B883',
     },
   },
   // Alternate preset — violet. Still a first-class, ready-to-use accent.
@@ -157,7 +157,7 @@ const brandPresets: Record<BrandPresetKey, BrandConfig> = {
   },
 }
 
-const brandPreset: BrandPresetKey = 'secondary'
+const brandPreset: BrandPresetKey = 'primary'
 
 export const siteConfig: SiteConfig = {
   name: 'Pellicule',

@@ -1,5 +1,5 @@
 {
-  "theme": "default",
+  "theme": "sharp",
   "appearance": {
     "contentIcons": "accent"
   },
@@ -19,6 +19,12 @@
     "primary": {
       "label": "Get started",
       "href": "/quickstart"
+    },
+    "logo": {
+      "light": "/brand/pellicule-wordmark-light.svg",
+      "dark": "/brand/pellicule-wordmark-dark.svg",
+      "showTitle": false,
+      "rightText": ""
     }
   },
   "tabs": [
@@ -44,5 +50,9 @@
   ],
   "ai": {
     "chat": false
+  },
+  "favicon": {
+    "light": "/brand/pellicule-mark.svg",
+    "dark": "/brand/pellicule-mark.svg"
   }
 }
