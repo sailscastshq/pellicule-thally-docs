@@ -1,6 +1,8 @@
 # Pellicule first-video guide
 
-A focused documentation site built with Thally for Vue developers rendering their first video with Pellicule.
+Describe the video you want. Your agent builds it with Pellicule. No Vue experience required.
+
+A focused Thally documentation site with the official Pellicule agent skill, a copyable first-video brief, and an optional manual source-editing guide.
 
 ## Read the guide locally
 
@@ -14,7 +16,8 @@ npm run dev
 Open the local URL printed by Next.js (normally http://localhost:3040).
 
 - `src/content/introduction.mdx`: audience and frame model.
-- `src/content/quickstart.mdx`: prerequisites, complete Vue example, rendering and verification.
+- `src/content/quickstart.mdx`: install the agent skill, give a brief, render and review.
+- `src/content/guides/edit-the-source.mdx`: optional complete Vue example and manual setup.
 - `src/content/guides/timing-and-output.mdx`: extend the output and reason about timing.
 - `public/examples/`: tested Vue source, rendered MP4 and still image.
 - `docs.json`: navigation.

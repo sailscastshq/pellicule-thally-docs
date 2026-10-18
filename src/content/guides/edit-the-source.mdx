@@ -1,0 +1,109 @@
+---
+title: Edit the source yourself
+description: Optional manual setup and the complete tested Vue component.
+---
+Prefer to work in code? This is the optional manual path. For the agent-assisted workflow, [start with the quickstart](/quickstart).
+
+By the end, you will have `first-video.mp4`: a 1280 × 720 title card that fades in and moves upward. The output lasts three seconds at 30 fps.
+
+## 1. Check the prerequisites
+
+Use Node.js with npm and install FFmpeg for your operating system before continuing. Check both executables:
+
+```bash
+node --version
+npm --version
+ffmpeg -version
+```
+
+The verification run used Node.js 24.14.1 and FFmpeg 8.0.1 on macOS. The Pellicule README lists Node.js 18+; this walkthrough does not claim to test that minimum.
+
+## 2. Create an isolated project
+
+```bash
+mkdir first-pellicule-video
+cd first-pellicule-video
+npm init -y
+npm install --save-exact pellicule@0.4.0 vue@3.5.43
+npx playwright install chromium
+```
+
+The last command installs Chromium for the Playwright version in your project. It downloads a browser; allow time and disk space for that first run. Commit the generated `package-lock.json` if you want other people to reproduce the same dependency tree.
+
+## 3. Write Video.vue
+
+Create a file named `Video.vue` in the project root:
+
+```vue
+<script setup>
+import { computed } from 'vue'
+import { useFrame, interpolate } from 'pellicule'
+const frame = useFrame()
+const opacity = computed(() => interpolate(frame.value, [0, 20], [0, 1]))
+const y = computed(() => interpolate(frame.value, [0, 20], [24, 0]))
+</script>
+
+<template>
+  <main class="video">
+    <div :style="{ opacity, transform: `translateY(${y}px)` }">
+      <p>PELLICULE / FIRST FRAME</p>
+      <h1>Hello, video.</h1>
+      <span>An idea. A prompt. A video.</span>
+    </div>
+  </main>
+</template>
+
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; }
+.video { width: 100%; height: 100%; display: grid; place-items: center; background: #111827; color: #f8fafc; font-family: Arial, sans-serif; }
+p { color: #a78bfa; font-size: 18px; letter-spacing: 4px; }
+h1 { font-size: 84px; margin: 18px 0; letter-spacing: -4px; }
+span { color: #cbd5e1; font-size: 22px; }
+</style>
+```
+
+`useFrame()` returns a reactive reference. `interpolate()` maps frames 0–20 to opacity 0–1 and vertical offset 24–0 pixels. The computed values update whenever Pellicule advances the frame.
+
+The surrounding `.video` stays opaque. Only the title group fades, so the background remains dark from the first frame.
+
+## 4. Render the MP4
+
+From the directory containing `Video.vue`, run:
+
+```bash
+npx pellicule Video.vue -d 90 -f 30 -w 1280 -h 720 -o first-video.mp4
+```
+
+- `-d 90` captures 90 frames, numbered 0–89.
+- `-f 30` plays 30 frames per second: 90 ÷ 30 = 3 seconds.
+- `-w 1280 -h 720` sets the output dimensions. Here `-h` means height; use `--help` for help.
+- `-o` chooses the output filename.
+
+Wait for `Done! Rendered 90 frames`, then open `first-video.mp4` with your video player. You should see the title settle into place during the first second and remain visible for the rest of the clip.
+
+![The rendered title card at one second](/examples/first-video.png)
+
+[Download the tested Vue component](/examples/Video.vue) · [Watch the rendered MP4](/examples/first-video.mp4)
+
+## 5. Verify the result
+
+If FFprobe is available with your FFmpeg installation:
+
+```bash
+ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,nb_frames -show_entries format=duration -of json first-video.mp4
+```
+
+Expected values are H.264, 1280 × 720, `30/1`, 90 frames, and duration `3.000000`. The supplied example was rendered and checked with these values on macOS.
+
+## If rendering stops
+
+| Symptom | Next step |
+| --- | --- |
+| `ffmpeg` is not found | Install FFmpeg and confirm `ffmpeg -version` works in the same terminal. |
+| Playwright cannot find a browser executable | Run `npx playwright install chromium` inside this project, then retry. |
+| Input file cannot be found | Check that your terminal is in the directory containing `Video.vue`. |
+| `listen EPERM` | The environment may prohibit starting Pellicule's local build server. The assessment run hit this inside a restricted execution sandbox and succeeded when localhost execution was allowed. |
+| A port is already in use | Read the server error and stop only the process you own, or consult Pellicule's `--help` for the supported server options. |
+
+Continue with [timing and output](/guides/timing-and-output).

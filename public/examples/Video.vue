@@ -11,7 +11,7 @@ const y = computed(() => interpolate(frame.value, [0, 20], [24, 0]))
     <div :style="{ opacity, transform: `translateY(${y}px)` }">
       <p>PELLICULE / FIRST FRAME</p>
       <h1>Hello, video.</h1>
-      <span>One Vue component. Three seconds of motion.</span>
+      <span>An idea. A prompt. A video.</span>
     </div>
   </main>
 </template>

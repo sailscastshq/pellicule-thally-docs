@@ -162,8 +162,8 @@ const brandPreset: BrandPresetKey = 'secondary'
 export const siteConfig: SiteConfig = {
   name: 'Pellicule',
   description:
-    'Render your first video with Vue.',
-  repoUrl: '',
+    'Describe a video. Your agent builds it with Pellicule.',
+  repoUrl: 'https://github.com/sailscastshq/pellicule-thally-docs',
   links: [
     { label: 'Get started', href: '/quickstart' },
     { label: 'Official docs', href: 'https://docs.sailscasts.com/pellicule' },

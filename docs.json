@@ -35,7 +35,8 @@
         {
           "group": "Make it yours",
           "pages": [
-            "guides/timing-and-output"
+            "guides/timing-and-output",
+            "guides/edit-the-source"
           ]
         }
       ]

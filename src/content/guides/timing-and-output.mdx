@@ -2,7 +2,17 @@
 title: Adjust timing and output
 description: Make a longer title card without confusing frames with seconds.
 ---
-Start with the `Video.vue` from the [quickstart](/quickstart). This guide changes the delivery format while keeping the animation easy to reason about.
+Start with the video from the [quickstart](/quickstart). You can ask your agent for a change, then review the new MP4.
+
+## Ask for a six-second version
+
+```text
+Use the pellicule skill. Make a six-second version of my title card at 30 fps.
+Keep the entrance animation at the same speed and extend the hold at the end.
+Render it to six-seconds.mp4 and verify the duration before returning its path.
+```
+
+The tested command below does this by extending the capture to 180 frames. The remaining sections explain the timing if you or your agent want to inspect it.
 
 ## Make a six-second version
 

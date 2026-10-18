@@ -1,35 +1,27 @@
 ---
 title: Pellicule
-description: Render your first video from a Vue component.
+description: Describe the video you want. Your agent builds it with Pellicule. No Vue experience required.
 mode: home
 ---
-<Hero title="Pellicule" subtitle="Render your first video from a Vue component." primaryLabel="Render your first video" primaryHref="/quickstart" secondaryLabel="Explore timing" secondaryHref="/guides/timing-and-output" />
+<Hero title="Pellicule" subtitle="Describe the video you want. Your agent builds it with Pellicule. No Vue experience required." primaryLabel="Make your first video" primaryHref="/quickstart" />
 
-Pellicule turns Vue components into video files. Describe each frame in code, then let Pellicule capture the frames in a browser and encode them with FFmpeg.
+<video controls playsInline preload="metadata" poster="/examples/first-video.png" style={{ width: '100%', borderRadius: '12px' }} aria-label="A three-second title card rendered with Pellicule">
+  <source src="/examples/first-video.mp4" type="video/mp4" />
+  <a href="/examples/first-video.mp4">Watch the example MP4</a>
+</video>
 
-This guide is for Vue developers who want to make a short title sequence, product announcement, or repeatable video template. You should be comfortable with single-file components, computed values, and the terminal.
+## From an idea to an MP4
 
-## Start with one small video
+Make a product intro, an announcement, or a reusable video template with a coding agent. Install Pellicule's official skill, describe what you want, and have your agent create and render the video locally.
 
-[Render your first video](/quickstart): create a three-second title card with a fade and upward movement. The example uses local text and system fonts, so there are no asset downloads or API keys to configure.
+The skill gives your agent Pellicule's setup, animation, timing, and rendering guidance. Pellicule uses Vue underneath; your agent can write the components for you. You direct the result and review the finished video.
 
-Then [adjust timing and output](/guides/timing-and-output) to make a six-second version and understand frames, frame rate, and dimensions.
+## Start small, then refine
 
-## Think in frames
+[Make your first video](/quickstart) with a copyable prompt and a three-second output. You need a coding agent that can work with local files and a terminal, Node.js, and FFmpeg. You do not need an existing Vue app.
 
-A video at 30 frames per second has 30 still images for each second of playback. Pellicule updates the reactive value returned by `useFrame()` for each image. A Vue `computed()` value turns that frame number into opacity, position, or another visual property.
+Then [change the timing and output](/guides/timing-and-output) with follow-up prompts. If you prefer to work directly in code, the [manual example](/guides/edit-the-source) includes the complete tested component.
 
-Keep motion tied to the frame number. Browser timers and CSS transitions depend on elapsed wall-clock time, so they are a poor fit for reproducible frame capture.
+Pellicule captures frames in a browser and encodes them with FFmpeg. Your project stays editable, so you can ask for another variation without starting over.
 
-## What you will need
-
-- Node.js and npm. This walkthrough was tested with Node.js 24.14.1.
-- Vue 3 and Pellicule 0.4.0, installed by the quickstart.
-- FFmpeg available in your terminal.
-- Chromium for Pellicule's Playwright renderer.
-
-Pellicule renders offline. Use a timeline editor when your task is primarily cutting and arranging recorded footage.
-
-## Scope and sources
-
-These pages are a focused first-video guide, verified against Pellicule 0.4.0. For the full API and integration guides, visit the [official Pellicule documentation](https://docs.sailscasts.com/pellicule) and [source repository](https://github.com/sailscastshq/pellicule).
+[Official agent skill](https://github.com/sailscastshq/pellicule/tree/main/skills) · [Full Pellicule documentation](https://docs.sailscasts.com/pellicule)
