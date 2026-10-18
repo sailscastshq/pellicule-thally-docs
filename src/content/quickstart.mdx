@@ -1,109 +1,44 @@
 ---
 title: Make your first video
-description: Render a 30-second logo film with animation and an original soundtrack, using the complete example project.
+description: Give your coding agent a short brief, then watch your first MP4.
 ---
-Make the film below: two green bars become Pellicule's wordmark, typography moves through the scene, and an original soundtrack follows the animation. You will finish with an MP4 and the editable project that made it. No Vue experience is needed for these steps.
+Make a three-second video with a title that fades in. You describe it; your coding agent creates the scene and renders an MP4.
 
-<video controls playsInline preload="metadata" poster="/examples/pellicule-intro.png" style={{ width: '100%' }} aria-label="The completed 30-second Pellicule film with sound">
-  <source src="/examples/pellicule-intro.mp4" type="video/mp4" />
-  <a href="/examples/pellicule-intro.mp4">Download the completed MP4</a>
-</video>
+You need a coding agent that can edit files and run terminal commands, such as Codex, Claude Code or Cursor. Have Node.js with npm and FFmpeg available on your machine.
 
-Press play to hear the soundtrack. Nothing plays automatically.
+## 1. Install the Pellicule skill
 
-## 1. Check your tools
-
-You need Node.js with npm, FFmpeg, and a terminal. Run:
-
-```bash
-node --version
-npm --version
-ffmpeg -version
-```
-
-All three commands should print a version. This example was tested on macOS with Node.js 24.14.1 and FFmpeg 8.0.1. Pellicule documents Node.js 18+; that minimum was not tested here. If FFmpeg is missing, install it for your operating system before continuing.
-
-## 2. Open the example project
-
-[Download the complete project](/examples/pellicule-first-video.zip), extract it, and open a terminal in the `pellicule-first-video` folder. It contains:
-
-- `Video.vue`: the complete frame-driven animation.
-- `make-sound.mjs`: an original sound generator using Node.js alone.
-- `package.json` and `package-lock.json`: Pellicule 0.4.0, Vue 3.5.43 and their locked dependencies.
-- `pellicule-wordmark.svg`, `CREDITS.md` and `LICENSE`: the brand artwork, sound provenance and reuse terms.
-
-Install the dependencies and Chromium:
-
-```bash
-npm ci
-npx playwright install chromium --only-shell
-```
-
-The Chromium command installs the headless browser used for rendering. It can take longer on the first run. You do not need to open that browser yourself.
-
-## 3. Create the soundtrack
-
-From the same folder:
-
-```bash
-node make-sound.mjs
-```
-
-Expect `Created soundtrack.wav`. The script creates a 30-second stereo score with a rising plucked phrase and a quiet background pad. It uses no downloaded music, recordings or third-party samples. You can inspect the [sound source](/examples/make-sound.mjs) and [credits](/examples/CREDITS.txt).
-
-## 4. Render the film
-
-```bash
-npx pellicule Video.vue -d 900 -f 30 -w 1280 -h 720 -a soundtrack.wav -o pellicule-intro.mp4
-```
-
-Here `-d 900` means **900 frames**, not 900 seconds. At 30 frames per second, that produces 30 seconds. `-w` and `-h` set the dimensions; `-a` attaches the soundtrack. Audio is encoded into the MP4, so you can share one file.
-
-Wait for Pellicule's completion message, then open `pellicule-intro.mp4` in your video player. Check the opening reveal, the moving bars, the frame timeline and the closing wordmark. The soundtrack should be audible when your player is unmuted.
-
-If FFprobe is available with FFmpeg, inspect the file:
-
-```bash
-ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,r_frame_rate,nb_frames,sample_rate,channels -show_entries format=duration -of json pellicule-intro.mp4
-```
-
-The reference render has H.264 video, 1280 × 720, `30/1` fps, 900 video frames, AAC stereo audio at 48 kHz, and a 30-second duration. Font substitution may change the lettering on another operating system; the timing and dimensions should match.
-
-## Prefer to work with a coding agent?
-
-The steps above reproduce the exact example. For changes, you can ask a coding assistant to edit the same project. Install [Pellicule's official skill](https://github.com/sailscastshq/pellicule/tree/main/skills):
+Open a project folder in your agent and run:
 
 ```bash
 npx skills add sailscastshq/pellicule/skills
 ```
 
-Choose your agent in the installer. The tested noninteractive Codex form is:
+Choose your agent in the installer. The skill gives it Pellicule's setup, animation and rendering instructions. Start a fresh agent session in that folder if it cannot see the new skill.
 
-```bash
-npx --yes skills add sailscastshq/pellicule/skills --agent codex --yes
-```
+## 2. Describe your video
 
-Start a new agent session in the project if the skill is not visible, then give it a specific task:
+Send your agent this prompt:
 
 ```text
-Use the pellicule skill. In this example project, change “Make an idea”
-and “move.” to “Make your story” and “move.” Keep the green double-bar
-wordmark, frame timing and original soundtrack. Render pellicule-intro.mp4
-with the command in the README, check the file, and tell me its local path.
-Do not upload or publish it.
+Use the pellicule skill to make a three-second video that says
+“Hello, video.” on a dark background. Fade the title in, then hold it.
+Render an MP4 at 1280 × 720 and 30 fps. Show me the local file when
+it is ready. Do not upload or publish it.
 ```
 
-Review the result yourself. An agent can write the component; you decide whether the video does what you intended.
+Your agent handles the project, Vue component and render command. If a tool is missing, have it explain what is needed before continuing. You do not need to write Vue yourself.
 
-## If something stops
+## 3. Watch it
 
-| Symptom | What to check |
-| --- | --- |
-| `ffmpeg` is not found | Confirm `ffmpeg -version` works in this terminal. |
-| Chromium executable is missing | Run `npx playwright install chromium --only-shell` inside this project. |
-| `Video.vue` or `soundtrack.wav` is missing | Check your current folder and run `node make-sound.mjs` before rendering. |
-| A server cannot listen (`EPERM`) | Your execution environment may block local servers. The render needs permission to start its local browser/build server. |
-| The MP4 is silent | Unmute the player; confirm the render command includes `-a soundtrack.wav` and FFprobe lists an audio stream. |
-| Text looks different | The example uses system Arial/Helvetica. Check font substitution and line length on your operating system. |
+Open the MP4 your agent returns. Check that the title fades in and the clip lasts three seconds. Then change the words, colors or movement in your prompt and ask for another render.
 
-Next, [make a six-second logo reveal and change the sound](/guides/timing-and-output).
+[Watch a tested three-second example](/examples/first-video.mp4). Your agent's design may differ; the useful result is your own playable video.
+
+## If you get stuck
+
+- **Skill not found:** confirm installation completed for this agent, then start a new session in the same folder.
+- **Missing tools:** ask the agent to check Node.js, FFmpeg and Playwright Chromium, and report the missing prerequisite.
+- **Render fails:** give the agent the actual error and ask it to resolve that error before claiming success.
+
+Ready to go further? [Explore timing and sound](/guides/timing-and-output) using the optional showcase project.

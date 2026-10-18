@@ -1,6 +1,6 @@
 # Pellicule documentation
 
-Pellicule turns Vue components into MP4 videos. This focused Thally site explains the tool, renders a complete 30-second film with original sound, and teaches timing and audio through a six-second version.
+Pellicule turns Vue components into MP4 videos. This focused Thally site explains the tool, gets a new user to a simple first video with a coding agent, and offers a separate 30-second showcase with original sound and a six-second timing/audio guide.
 
 Live: https://pellicule.thally.app/
 

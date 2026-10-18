@@ -2,7 +2,20 @@
 title: Adjust timing and sound
 description: Export a six-second logo reveal from the full film, then control timing and audio deliberately.
 ---
-Start with the project from the [quickstart](/quickstart). You have a 30-second film; this guide exports its opening as a short logo reveal and explains what changes when you adjust timing or sound.
+This optional guide uses the 30-second film on the [homepage](/), separate from the simple [first-video quickstart](/quickstart). Export its opening as a short logo reveal, then adjust timing and sound.
+
+## Open the showcase project
+
+[Download the complete showcase project](/examples/pellicule-first-video.zip), extract it, and open its folder in a terminal. With Node.js and FFmpeg available, run:
+
+```bash
+npm ci
+npx playwright install chromium --only-shell
+node make-sound.mjs
+npx pellicule Video.vue -d 900 -f 30 -w 1280 -h 720 -a soundtrack.wav -o pellicule-intro.mp4
+```
+
+The project includes the Vue scene, original score generator, locked dependencies, artwork and credits. This full command was tested from a fresh extraction; the result is the film shown on the homepage.
 
 ## Export just the logo reveal
 
