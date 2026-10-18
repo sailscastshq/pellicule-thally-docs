@@ -40,7 +40,7 @@ Local verification on 18 October 2026:
 - Thally content check: zero errors, zero warnings.
 - Production build: passed.
 - Homepage semantic test: passed after adding the supported `Hero` component.
-- Final full starter suite: 1,660 passed, four skipped, one failed. The remaining `doc-route-static-params.test.ts` assertion expects a nonempty API-reference route list; this focused site has no API-reference tab. Framework tests were preserved rather than adding unrelated API documentation to satisfy that assumption.
+- Final full starter suite: all 178 test files passed; 1,662 tests passed and four existing tests skipped. The route regression test now uses explicit API-content fixtures and also covers sites without API documentation; neither managed-route guard coverage nor API enumeration was skipped. Runtime application code is unchanged.
 - Local production browser verification: all three pages and the downloadable component, image, and MP4 returned HTTP 200; each page has one H1, desktop and mobile had no horizontal document overflow, and no page JavaScript errors were observed.
 
 Publishing status is recorded separately during the assessment. A local build does not establish a managed deployment. No live Thally URL is claimed here.
