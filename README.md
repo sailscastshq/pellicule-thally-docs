@@ -35,3 +35,5 @@ Reduced test concurrency avoids timeouts observed on the shared verification mac
 - https://github.com/sailscastshq/pellicule
 - https://docs.sailscasts.com/pellicule
 - https://docs.thally.io/quickstart
+
+The walkthrough article lives at `/articles/build-pellicule-docs-with-thally`, in a separate navigation tab, and uses Thally’s documented centered page layout. The timing/audio guide leads with actionable agent prompts; exact CLI details remain available below.

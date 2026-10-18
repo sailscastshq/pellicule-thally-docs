@@ -46,6 +46,17 @@
           ]
         }
       ]
+    },
+    {
+      "tab": "How this site was built",
+      "groups": [
+        {
+          "group": "Walkthrough",
+          "pages": [
+            "articles/build-pellicule-docs-with-thally"
+          ]
+        }
+      ]
     }
   ],
   "ai": {

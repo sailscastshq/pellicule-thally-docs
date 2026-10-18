@@ -1,0 +1,83 @@
+---
+title: Build and publish Pellicule docs with Thally
+navTitle: Build docs with Thally
+description: A practical walkthrough of creating, testing and publishing the Pellicule documentation site with Thally.
+mode: center
+---
+A useful quickstart should leave the reader with something they can use. For [Pellicule](https://github.com/sailscastshq/pellicule), that is a playable MP4.
+
+Pellicule renders Vue components into videos. I built [this documentation site](https://pellicule.thally.app/) with Thally to explain the tool, get a new user to a simple first video, and offer a practical guide to timing and sound. Here is how to build a similar site, using the [published source](https://github.com/sailscastshq/pellicule-docs) as a reference.
+
+## Choose one useful outcome
+
+Start with three things: an introduction explaining the tool and audience, a working quickstart, and one practical guide.
+
+My quickstart asks the reader to install Pellicule's official skill, give a coding agent a short video brief, and watch the resulting MP4. A polished 30-second film demonstrates what Pellicule can do, but reproducing that showcase is optional. Keeping the two separate makes the first useful result much quicker.
+
+## Create the site in Thally Cloud
+
+You need a Thally account, a GitHub account with permission to approve the Thally GitHub App, Git, and Node.js with npm for local editing. I used Node.js 24.14.1 on macOS. FFmpeg and Playwright Chromium are needed to render Pellicule videos, not to publish Thally's starter site.
+
+Follow the [official Thally quickstart](https://docs.thally.io/quickstart). Create a site in Thally Cloud, choose its name and address, and let Cloud create a compatible documentation repository. Review the App access and trial terms before proceeding. Optional product-tracking features can wait.
+
+Publish the starter, then record the exact repository and production branch Cloud shows. Your content needs to reach that repository.
+
+## Edit the connected project
+
+Replace `YOUR_THALLY_REPOSITORY_URL` with the Git URL shown in Cloud:
+
+```bash
+git clone YOUR_THALLY_REPOSITORY_URL my-docs
+cd my-docs
+git switch -c feat/pellicule-docs
+npm ci
+```
+
+Read `AGENTS.md`, `package.json`, `docs.json` and `src/data/site.ts`. The starter includes a pinned framework snapshot; keep its internals and `starter-release.json` intact.
+
+To reuse this example, clone the public Pellicule docs into another directory. Review and copy its authored `src/content/`, `public/examples/`, `public/brand/` and `docs.json` into your connected project. Adapt the identity and palette fields in your existing `src/data/site.ts`, preserving its managed configuration wrapper and your own repository URL.
+
+## Write pages and connect navigation
+
+Pages are MDX files under `src/content/`. Start with title and description frontmatter, then explain the result:
+
+```mdx
+---
+title: Make your first video
+description: Give your coding agent a short brief, then watch your first MP4.
+---
+Make a three-second video with a title that fades in. You describe it;
+your coding agent creates the scene and renders an MP4.
+```
+
+Give the quickstart prerequisites, a short working path, a way to recognize success, and troubleshooting for likely failures. Keep deeper examples in the practical guide.
+
+Add page slugs to the tabs and groups in `docs.json`. This site uses `introduction`, `quickstart`, `guides/timing-and-output` and `guides/edit-the-source`. The last page explains the optional showcase source. Keep navigation focused on reader tasks.
+
+For branding, I used Pellicule's green `#42B883` and double-bar wordmark, with darker green links on light surfaces. Portable logo and favicon paths live in `docs.json`; palette defaults live in `src/data/site.ts`. Changes made through Cloud branding settings are saved separately and need publishing too.
+
+## Check the instructions and preview
+
+Run the checks required by your starter:
+
+```bash
+npm ci --ignore-scripts --prefix .github/thally-tooling
+.github/thally-tooling/node_modules/.bin/thally check --ci .
+npm test
+npm run build
+npm run dev
+```
+
+Open the URL printed by the development server. This project's configured port is `3040`. Check the introduction, quickstart, practical guide, mobile navigation and downloads. Play videos with sound enabled; a poster image cannot prove the example works.
+
+For a downloadable example, test a fresh extraction rather than relying on your working folder. The showcase ZIP includes locked dependencies and an original sound generator, so readers can reproduce it without finding external music or assets.
+
+## Publish and verify the result
+
+Commit the intended changes and merge them into the production branch through your normal repository workflow. Push that branch, wait for Thally's managed deployment, and publish any saved Cloud settings. Then check the actual public URL and expected content again.
+
+The source connection was my biggest publishing obstacle. I initially authored content in `pellicule-thally-docs`, while Cloud was connected to `pellicule-docs`. The live site still showed the starter. Checking the connected repository, branch and commit revealed the mismatch; adapting the content into the correct repository resolved it.
+
+I also found that a long-running local preview retained an earlier generated content snapshot. Running `npm run runtime-sources:build` refreshed it before browser verification. During example testing, a short Pellicule render retained its longer audio track; the practical guide now trims and fades that audio explicitly.
+
+Those checks turned the site from a set of plausible instructions into a workflow another developer can follow, inspect and adapt.

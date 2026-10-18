@@ -1,50 +1,48 @@
 ---
 title: Adjust timing and sound
-description: Export a six-second logo reveal from the full film, then control timing and audio deliberately.
+description: Ask your agent to change a video's duration, slow its reveal and fade its soundtrack without losing control of the final output.
 ---
-This optional guide uses the 30-second film on the [homepage](/), separate from the simple [first-video quickstart](/quickstart). Export its opening as a short logo reveal, then adjust timing and sound.
+Start with the video from the [quickstart](/quickstart), in the same project and agent session. Tell your agent what should change and what should stay the same, then review the MP4 it renders.
 
-## Open the showcase project
+## Make a six-second version
 
-[Download the complete showcase project](/examples/pellicule-first-video.zip), extract it, and open its folder in a terminal. With Node.js and FFmpeg available, run:
-
-```bash
-npm ci
-npx playwright install chromium --only-shell
-node make-sound.mjs
-npx pellicule Video.vue -d 900 -f 30 -w 1280 -h 720 -a soundtrack.wav -o pellicule-intro.mp4
+```text
+Use the pellicule skill. Make this video six seconds long at 30 fps.
+Keep the entrance animation at its current speed and extend the hold
+at the end. Render six-seconds.mp4. Verify 180 video frames and a
+six-second file duration, then show me the local file. Do not upload it.
 ```
 
-The project includes the Vue scene, original score generator, locked dependencies, artwork and credits. This full command was tested from a fresh extraction; the result is the film shown on the homepage.
+The entrance should look the same, followed by a longer hold. Check the file's duration as well as the picture; changing the number of captured frames is different from slowing the animation.
 
-## Export just the logo reveal
+## Slow the reveal, keep the total duration
 
-From the folder containing `Video.vue` and `soundtrack.wav`, make a six-second soundtrack with a one-second fade, then render:
-
-```bash
-ffmpeg -y -i soundtrack.wav -t 6 -af afade=t=out:st=5:d=1 logo-sound.wav
-npx pellicule Video.vue -d 900 -r 0:180 -f 30 -w 1280 -h 720 -a logo-sound.wav -o logo-reveal.mp4
+```text
+Use the pellicule skill. Make the title fade in over two seconds,
+then hold it. Keep the whole video six seconds long at 30 fps.
+Update the frame-driven animation ranges, not wall-clock timers.
+Render slow-reveal.mp4 and verify 180 frames and six seconds.
 ```
 
-`-d 900` keeps the full scene's frame range. `-r 0:180` captures frames 0–179, giving you six seconds at 30 fps. The bars still become the `ll` in the wordmark at the same speed; the later scenes are simply left out. Because this range starts at zero, the soundtrack begins at the same point as the full film. The FFmpeg step shortens the score and fades it out before the cut.
+The title should reach full opacity at two seconds and remain visible for the final four seconds. If your scene has other movements, tell the agent which ones to preserve or retime. A slower entrance should not accidentally lengthen the finished file.
 
-In the tested Pellicule 0.4.0 release, passing the full 30-second WAV to this short frame range kept the MP4 container at 30 seconds, even though it had only 180 video frames. Trimming the sound first makes the delivered file six seconds long.
+## Fade a soundtrack cleanly
 
-[Watch the tested six-second version](/examples/logo-reveal.mp4). To confirm your output:
+If your video already has sound, ask:
 
-```bash
-ffprobe -v error -show_entries stream=codec_type,codec_name,nb_frames,r_frame_rate -show_entries format=duration -of json logo-reveal.mp4
+```text
+Use the pellicule skill. Keep this video six seconds long. Make its
+soundtrack match that duration and fade out during the final second.
+Write a separate edited audio file so the original stays intact.
+Render video-with-fade.mp4, verify that both picture and sound end
+at six seconds, and check the final second for an abrupt cut.
 ```
 
-Expect H.264 video, 180 video frames, `30/1` fps, an AAC audio stream and a duration of six seconds.
+Play the result with sound enabled. The last second should fade smoothly, and the MP4 should end at six seconds. For new music, supply a file you have permission to use; the agent should not choose an unverified track for you.
 
-## Change the words without changing the timing
+In the tested Pellicule 0.4.0 release, rendering 180 frames with the full 30-second showcase WAV kept the MP4 container at 30 seconds. The picture had six seconds of frames, but the audio was longer. Preparing the audio to the intended duration first resolved it. Keep that check in your brief.
 
-Open `Video.vue`. In the second scene, replace `Make an idea` with `Make your story`. Keep the second line, `move.`, short. Render the opening range to check the logo, then render the full film to review the changed scene.
-
-A coding agent can make this edit if you prefer. Tell it which text to change, which timing to preserve, and which output to render. The [source guide](/guides/edit-the-source) explains the frame ranges.
-
-## Use frames, not wall-clock time
+## Inspect the timing yourself
 
 At 30 fps:
 
@@ -53,31 +51,43 @@ frames = seconds × 30
 seconds = frames ÷ 30
 ```
 
-The opening morph uses frames 40–100, so it lasts two seconds. Changing the output to 60 fps without changing those frame numbers would make that motion last one second. To preserve the timing at another frame rate, scale **all** scene boundaries and animation ranges, not just the output duration. The supplied renders use 30 fps; a 60-fps adaptation is not claimed as tested.
-
-Avoid `setTimeout`, current timestamps and unseeded randomness in the component. Pellicule may render a frame faster or slower than playback; the frame number must determine what appears.
-
-## Change or remove the sound
-
-The soundtrack is made by `make-sound.mjs`. The first four `note` calls define the opening phrase; their first argument is the start time in seconds. Keep those starts aligned with the reveal, then run the script again and rerender.
-
-To make a silent version, omit the audio flag:
+For a standalone `Video.vue` scene without audio, the tested six-second command is:
 
 ```bash
-npx pellicule Video.vue -d 900 -r 0:180 -f 30 -w 1280 -h 720 -o logo-reveal-silent.mp4
+npx pellicule Video.vue -d 180 -f 30 -w 1280 -h 720 -o six-seconds.mp4
 ```
 
-For your own WAV or MP3, replace `soundtrack.wav` after checking your rights to use it. For a different output duration, prepare the audio to that duration explicitly; do not assume this tested version will trim a longer track. This example's original synthesized score and its generator are included under the [example license](/examples/LICENSE.txt); the Pellicule mark remains brand artwork.
+For a fade implemented with an interpolation range, `[0, 60]` spans two seconds at 30 fps. Changing to 60 fps without scaling every frame-based boundary would speed up the scene. The supplied examples are verified at 30 fps; no 60-fps adaptation is claimed here.
 
-## Troubleshoot the result
+Avoid `setTimeout`, current timestamps and unseeded randomness. The frame number must determine what appears, regardless of how quickly the renderer captures it.
 
-| Result | Likely next step |
+## Try the optional showcase project
+
+The [homepage film](/) is a separate, deeper example. [Download its complete project](/examples/pellicule-first-video.zip), extract it and follow the included README, or ask your agent to do that work using the Pellicule skill. It includes the scene, locked dependencies and an original sound generator.
+
+To export its opening as a six-second logo reveal, the tested commands trim and fade the WAV before rendering:
+
+```bash
+ffmpeg -y -i soundtrack.wav -t 6 -af afade=t=out:st=5:d=1 logo-sound.wav
+npx pellicule Video.vue -d 900 -r 0:180 -f 30 -w 1280 -h 720 -a logo-sound.wav -o logo-reveal.mp4
+```
+
+`-r 0:180` captures frames 0–179 from the full 900-frame scene. [Watch the tested result](/examples/logo-reveal.mp4), or inspect your own file:
+
+```bash
+ffprobe -v error -show_entries stream=codec_type,codec_name,nb_frames,r_frame_rate -show_entries format=duration -of json logo-reveal.mp4
+```
+
+Expect H.264 video, 180 video frames, `30/1` fps, AAC audio and a six-second duration. Read the [scene explanation](/guides/edit-the-source) for the showcase's individual animation ranges and [credits](/examples/CREDITS.txt) for its audio and artwork.
+
+## If the result is wrong
+
+| Result | What to ask your agent to check |
 | --- | --- |
-| Six-second file contains a later scene | Check that the range is `0:180`, not a later start frame. |
-| Animation speeds up after changing fps | Scale every frame-based boundary, or return to 30 fps. |
-| File duration is longer than the captured frames | Check the audio duration. Trim and fade the WAV to match before rendering. |
-| Sound ends abruptly | Fade the sound source before the cut, then rerender. A frame range does not rearrange the score. |
-| Audio changes do not appear | Regenerate `soundtrack.wav`, then render a new MP4; changing the script alone does not update either file. |
-| Text wraps or clips in another format | This scene is composed for 1280 × 720. Reposition and resize elements before exporting a portrait layout. |
+| The whole animation slows when you wanted a longer hold | Preserve the entrance ranges; extend only the output duration. |
+| A slower reveal makes the file longer | Keep the output at 180 frames and retime movement inside that six-second window. |
+| The file lasts longer than its captured frames | Inspect the audio duration; trim and fade it before rendering. |
+| The sound still ends abruptly | Confirm the edited WAV was passed to the render, rather than the original. |
+| Audio edits do not appear | Regenerate the audio and render a new MP4; editing a generator alone does not update either file. |
 
-Run `npx pellicule --help` for the flags supported by your installed version. For integrating with an existing app, use the [official Pellicule documentation](https://docs.sailscasts.com/pellicule).
+Run `npx pellicule --help` for the flags supported by your installed version. For integration with an existing app, use the [official Pellicule documentation](https://docs.sailscasts.com/pellicule).
