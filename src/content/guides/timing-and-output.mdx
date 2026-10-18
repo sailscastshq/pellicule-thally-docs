@@ -1,0 +1,56 @@
+---
+title: Adjust timing and output
+description: Make a longer title card without confusing frames with seconds.
+---
+Start with the `Video.vue` from the [quickstart](/quickstart). This guide changes the delivery format while keeping the animation easy to reason about.
+
+## Make a six-second version
+
+Keep 30 fps and double the frame count:
+
+```bash
+npx pellicule Video.vue -d 180 -f 30 -w 1280 -h 720 -o six-seconds.mp4
+```
+
+The fade still takes 20 frames, approximately two-thirds of a second. The extra frames extend the visible hold at the end; they do not slow the fade.
+
+## Keep the fade duration when changing fps
+
+At 60 fps, the original 20-frame fade lasts approximately one-third of a second. To retain a two-thirds-second fade, change both interpolation input ranges from `[0, 20]` to `[0, 40]`.
+
+For a three-second output at 60 fps, set duration to 180 frames. The relationship is:
+
+```text
+frames = seconds × fps
+seconds = frames ÷ fps
+```
+
+This 60-fps variation is explained from the frame model; the verified output in this assessment uses 30 fps.
+
+## Change the canvas deliberately
+
+The example centers its content and uses percentage dimensions for the canvas. For portrait or smaller exports, check text size and line wrapping at the target dimensions rather than assuming a landscape layout will fit.
+
+Keep the three-second 1280 × 720 render as your baseline while editing. Change one variable at a time: content, timing, then dimensions.
+
+## Make each frame predictable
+
+Use frame-driven computed values for movement. Avoid `setTimeout`, unseeded random values, current timestamps, and network content that changes between renders. Prefer local assets and wait for fonts or images to load before relying on them.
+
+The first-video example uses system fonts and no remote assets to keep this first success small.
+
+## Confirm the longer file
+
+```bash
+ffprobe -v error -show_entries stream=width,height,r_frame_rate,nb_frames -show_entries format=duration -of json six-seconds.mp4
+```
+
+Expect 180 frames, `30/1`, and `6.000000` seconds. Compare it with the baseline: the entrance should look the same, followed by a longer hold.
+
+For flags beyond these examples, run:
+
+```bash
+npx pellicule --help
+```
+
+Use the [official integration documentation](https://docs.sailscasts.com/pellicule) when moving into an existing Vite, Rsbuild, Nuxt, or Quasar app. Start with the standalone example before adding framework configuration.

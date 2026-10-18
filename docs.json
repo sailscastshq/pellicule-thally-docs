@@ -1,0 +1,47 @@
+{
+  "theme": "default",
+  "appearance": {
+    "contentIcons": "accent"
+  },
+  "markdown": {
+    "enabled": true
+  },
+  "i18n": {
+    "defaultLocale": "en",
+    "locales": [
+      {
+        "code": "en",
+        "label": "English"
+      }
+    ]
+  },
+  "navbar": {
+    "primary": {
+      "label": "Get started",
+      "href": "/quickstart"
+    }
+  },
+  "tabs": [
+    {
+      "tab": "Documentation",
+      "groups": [
+        {
+          "group": "Start here",
+          "pages": [
+            "introduction",
+            "quickstart"
+          ]
+        },
+        {
+          "group": "Make it yours",
+          "pages": [
+            "guides/timing-and-output"
+          ]
+        }
+      ]
+    }
+  ],
+  "ai": {
+    "chat": false
+  }
+}
