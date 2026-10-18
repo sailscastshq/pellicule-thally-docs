@@ -1,99 +1,52 @@
-# Thally Starter
+# Pellicule first-video guide
 
-A production-ready documentation site built with the open-source Thally runtime.
-Use this repository as a GitHub template or clone it directly, then replace the
-starter content with documentation for your product.
+A focused documentation site built with Thally for Vue developers rendering their first video with Pellicule.
 
-Thally is the product knowledge layer for software teams. This starter is its
-portable publishing foundation: your content stays in Git, and the same source
-can serve people, search engines, and AI tools.
+## Read the guide locally
 
-This is the canonical complete template consumed by Thally Cloud, the CLI, and
-the MCP server. Runtime code is authored once in
-[`thallylabs/thally`](https://github.com/thallylabs/thally), then generated into
-this repository as a pinned, byte-identical snapshot. Do not manually repeat a
-runtime fix in both repositories.
-
-This README covers the portable starter, not the full managed platform. The
-sole production architecture authority is
-[`thally-cloud/ARCHITECTURE.md`](https://github.com/thallylabs/thally-cloud/blob/main/ARCHITECTURE.md),
-available to maintainers with access to the private repository. The CLI, MCP,
-and Cloud creation flows consume an exact promoted scaffold release rather
-than treating the mutable `main` branch as a release identity.
-
-## Run locally
+Prerequisites: Node.js with npm. The verification environment used Node.js 24.14.1.
 
 ```bash
-npm install
-npx thally dev
+npm ci
+npm run dev
 ```
 
-Open [http://localhost:3040](http://localhost:3040). The next available port is
-used automatically when 3040 is occupied. `npm run dev` starts the same server.
+Open the local URL printed by Next.js (normally http://localhost:3040).
 
-The `thally` CLI is a dev dependency of this site. Once the preview is ready,
-`thally dev` prints the local agent endpoints (`/llms.txt`, `/api/mcp`) and a
-`claude mcp add --transport http` command for connecting Claude Code. Run
-`npx thally --help` for the other commands, such as `thally new`,
-`thally check`, and `thally deploy`.
+- `src/content/introduction.mdx`: audience and frame model.
+- `src/content/quickstart.mdx`: prerequisites, complete Vue example, rendering and verification.
+- `src/content/guides/timing-and-output.mdx`: extend the output and reason about timing.
+- `public/examples/`: tested Vue source, rendered MP4 and still image.
+- `docs.json`: navigation.
+- `src/data/site.ts`: product identity and supported violet brand preset.
 
-## Make it yours
+Framework files come from the official Thally starter and retain its MIT license and pinned runtime manifest. See `AGENTS.md` for ownership rules.
 
-- Edit pages in `src/content/`.
-- Organize navigation and features in `docs.json`.
-- Set the product name, links, and versioned brand defaults in `src/data/site.ts`.
-- Replace `openapi.yaml` with your API specification.
-- Add logos or favicons in `public/` and reference them from your site settings.
+## Reproduce the video
 
-`starter-release.json` records the immutable starter and runtime version used
-to create the site. Keep it in the repository so `thally starter update` can
-plan framework updates without overwriting your content or portable settings.
+Follow the quickstart using Pellicule 0.4.0 and Vue 3.5.43. Install FFmpeg and Playwright Chromium as documented there. The checked-in MP4 was rendered locally and verified with FFprobe: H.264, 1280 × 720, 30 fps, 90 frames, 3.000 seconds. The guide's six-second command was also rendered and verified at 180 frames and 6.000 seconds.
 
-`thally starter update` performs a three-way comparison between the recorded
-previous scaffold, the promoted target scaffold, and your current project. It
-updates unchanged framework-owned files, preserves user-owned files, and stops
-for manual review when those contracts overlap. The command is a dry run until
-you pass `--apply`.
-
-Maintainers update the generated runtime snapshot through the **Sync Thally
-runtime** workflow. CI rejects a changed pin without matching files, changed
-files without a matching pin, missing files, and stale runtime files.
-
-Content icons are neutral by default. Set `appearance.contentIcons` to `accent`
-in `docs.json`, or add `iconColor="accent"` to an individual card or tile.
-Public page URLs ending in `.md` are disabled by default; enable them explicitly
-with `markdown.enabled` when that distribution surface fits your access model.
-
-## Validate changes
+## Validate the site
 
 ```bash
-npx thally check
+npm ci --ignore-scripts --prefix .github/thally-tooling
+.github/thally-tooling/node_modules/.bin/thally check --ci .
 npm test
 npm run build
 ```
 
-CI runs the same content check with the pinned workflow tooling:
-`npm ci --ignore-scripts --prefix .github/thally-tooling`, then
-`.github/thally-tooling/node_modules/.bin/thally check --ci .`.
+Local verification on 18 October 2026:
 
-## Deploy
+- Thally content check: zero errors, zero warnings.
+- Production build: passed.
+- Homepage semantic test: passed after adding the supported `Hero` component.
+- Final full starter suite: 1,660 passed, four skipped, one failed. The remaining `doc-route-static-params.test.ts` assertion expects a nonempty API-reference route list; this focused site has no API-reference tab. Framework tests were preserved rather than adding unrelated API documentation to satisfy that assumption.
+- Local production browser verification: all three pages and the downloadable component, image, and MP4 returned HTTP 200; each page has one H1, desktop and mobile had no horizontal document overflow, and no page JavaScript errors were observed.
 
-The site is a standard Next.js application. Deploy it through Thally Cloud or
-any compatible Next.js host. Cloudflare Workers configuration is included in
-`open-next.config.ts` and `wrangler.jsonc`.
+Publishing status is recorded separately during the assessment. A local build does not establish a managed deployment. No live Thally URL is claimed here.
 
-Thally Cloud publishes an immutable managed site release and activates it by
-moving the site's production pointer only after validation. Direct hosts use
-their own release and rollback mechanisms; publishing a package or synchronizing
-this starter does not move an existing site's pointer.
+## Sources
 
-On Vercel, the site URL used for canonical and agent links is detected
-automatically. On other hosts, for a custom domain, or on Cloudflare Workers,
-set `THALLY_SITE_URL` in your host's environment.
-
-Copy `.env.example` to `.env.local` only when you need optional services. Never
-commit real credentials.
-
-## License
-
-[MIT](LICENSE)
+- [Pellicule source](https://github.com/sailscastshq/pellicule)
+- [Official Pellicule docs](https://docs.sailscasts.com/pellicule)
+- [Official Thally quickstart](https://docs.thally.io/quickstart)
