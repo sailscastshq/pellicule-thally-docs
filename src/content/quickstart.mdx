@@ -1,77 +1,109 @@
 ---
 title: Make your first video
-description: Give your agent the Pellicule skill and a brief. Get a rendered MP4.
+description: Render a 30-second logo film with animation and an original soundtrack, using the complete example project.
 ---
-Make a three-second title card with a fade-in and a short upward movement. Your agent handles the Vue code and the render; you review the result.
+Make the film below: two green bars become Pellicule's wordmark, typography moves through the scene, and an original soundtrack follows the animation. You will finish with an MP4 and the editable project that made it. No Vue experience is needed for these steps.
 
-## 1. Open a project folder
+<video controls playsInline preload="metadata" poster="/examples/pellicule-intro.png" style={{ width: '100%' }} aria-label="The completed 30-second Pellicule film with sound">
+  <source src="/examples/pellicule-intro.mp4" type="video/mp4" />
+  <a href="/examples/pellicule-intro.mp4">Download the completed MP4</a>
+</video>
 
-Open an empty folder in a coding agent that can edit local files and run terminal commands. You need Node.js with npm and FFmpeg available on your machine. Your agent will check them before rendering.
+Press play to hear the soundtrack. Nothing plays automatically.
 
-This walkthrough was verified on macOS with Node.js 24.14.1 and FFmpeg 8.0.1.
+## 1. Check your tools
 
-## 2. Install the Pellicule skill
+You need Node.js with npm, FFmpeg, and a terminal. Run:
 
-In that folder, run the command from [Pellicule's official skill instructions](https://github.com/sailscastshq/pellicule/tree/main/skills):
+```bash
+node --version
+npm --version
+ffmpeg -version
+```
+
+All three commands should print a version. This example was tested on macOS with Node.js 24.14.1 and FFmpeg 8.0.1. Pellicule documents Node.js 18+; that minimum was not tested here. If FFmpeg is missing, install it for your operating system before continuing.
+
+## 2. Open the example project
+
+[Download the complete project](/examples/pellicule-first-video.zip), extract it, and open a terminal in the `pellicule-first-video` folder. It contains:
+
+- `Video.vue`: the complete frame-driven animation.
+- `make-sound.mjs`: an original sound generator using Node.js alone.
+- `package.json` and `package-lock.json`: Pellicule 0.4.0, Vue 3.5.43 and their locked dependencies.
+- `pellicule-wordmark.svg`, `CREDITS.md` and `LICENSE`: the brand artwork, sound provenance and reuse terms.
+
+Install the dependencies and Chromium:
+
+```bash
+npm ci
+npx playwright install chromium --only-shell
+```
+
+The Chromium command installs the headless browser used for rendering. It can take longer on the first run. You do not need to open that browser yourself.
+
+## 3. Create the soundtrack
+
+From the same folder:
+
+```bash
+node make-sound.mjs
+```
+
+Expect `Created soundtrack.wav`. The script creates a 30-second stereo score with a rising plucked phrase and a quiet background pad. It uses no downloaded music, recordings or third-party samples. You can inspect the [sound source](/examples/make-sound.mjs) and [credits](/examples/CREDITS.md).
+
+## 4. Render the film
+
+```bash
+npx pellicule Video.vue -d 900 -f 30 -w 1280 -h 720 -a soundtrack.wav -o pellicule-intro.mp4
+```
+
+Here `-d 900` means **900 frames**, not 900 seconds. At 30 frames per second, that produces 30 seconds. `-w` and `-h` set the dimensions; `-a` attaches the soundtrack. Audio is encoded into the MP4, so you can share one file.
+
+Wait for Pellicule's completion message, then open `pellicule-intro.mp4` in your video player. Check the opening reveal, the moving bars, the frame timeline and the closing wordmark. The soundtrack should be audible when your player is unmuted.
+
+If FFprobe is available with FFmpeg, inspect the file:
+
+```bash
+ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,r_frame_rate,nb_frames,sample_rate,channels -show_entries format=duration -of json pellicule-intro.mp4
+```
+
+The reference render has H.264 video, 1280 × 720, `30/1` fps, 900 video frames, AAC stereo audio at 48 kHz, and a 30-second duration. Font substitution may change the lettering on another operating system; the timing and dimensions should match.
+
+## Prefer to work with a coding agent?
+
+The steps above reproduce the exact example. For changes, you can ask a coding assistant to edit the same project. Install [Pellicule's official skill](https://github.com/sailscastshq/pellicule/tree/main/skills):
 
 ```bash
 npx skills add sailscastshq/pellicule/skills
 ```
 
-Choose your agent in the installer. For Codex, this noninteractive variant was also tested:
+Choose your agent in the installer. The tested noninteractive Codex form is:
 
 ```bash
 npx --yes skills add sailscastshq/pellicule/skills --agent codex --yes
 ```
 
-The installer should report that the `pellicule` skill is installed. Open a fresh agent session in the same folder if the skill is not visible to your current session. Tell your agent to use it explicitly.
-
-## 3. Give your agent this brief
-
-Copy this into your agent:
+Start a new agent session in the project if the skill is not visible, then give it a specific task:
 
 ```text
-Use the installed pellicule skill to make my first video.
-
-Check Node.js, npm, and FFmpeg first. If FFmpeg is missing, tell me what
-is needed before continuing; do not install system software for me.
-
-Work in a new first-video subfolder. Initialize an npm project and install
-pellicule@0.4.0 and vue@3.5.43 with --save-exact. Install Playwright Chromium
-with npx playwright install chromium if needed.
-
-Create Video.vue: a 1280 × 720 title card on a dark navy background.
-Show “Hello, video.” in large white type with a small green label above it.
-Fade the text from invisible to visible and move it upward 24 pixels during
-frames 0–20, then hold it. Use system fonts and no remote assets.
-Keep all animation driven by Pellicule's frame number.
-
-Render it with:
-npx pellicule Video.vue -d 90 -f 30 -w 1280 -h 720 -o first-video.mp4
-
-Check that the file exists and, if FFprobe is available, verify 90 frames,
-30 fps, 1280 × 720, and a three-second duration. Give me the local file path
-and summarize what you actually verified. Do not upload or publish it.
+Use the pellicule skill. In this example project, change “Make an idea”
+and “move.” to “Make your story” and “move.” Keep the green double-bar
+wordmark, frame timing and original soundtrack. Render pellicule-intro.mp4
+with the command in the README, check the file, and tell me its local path.
+Do not upload or publish it.
 ```
 
-The skill teaches the agent how to write the component and render it. You can change the words or colors in the brief without learning Vue first.
+Review the result yourself. An agent can write the component; you decide whether the video does what you intended.
 
-## 4. Review your video
+## If something stops
 
-Open the `first-video.mp4` path your agent returns. The title should fade and settle into place during the first second, then remain visible until the clip ends.
+| Symptom | What to check |
+| --- | --- |
+| `ffmpeg` is not found | Confirm `ffmpeg -version` works in this terminal. |
+| Chromium executable is missing | Run `npx playwright install chromium --only-shell` inside this project. |
+| `Video.vue` or `soundtrack.wav` is missing | Check your current folder and run `node make-sound.mjs` before rendering. |
+| A server cannot listen (`EPERM`) | Your execution environment may block local servers. The render needs permission to start its local browser/build server. |
+| The MP4 is silent | Unmute the player; confirm the render command includes `-a soundtrack.wav` and FFprobe lists an audio stream. |
+| Text looks different | The example uses system Arial/Helvetica. Check font substitution and line length on your operating system. |
 
-<video controls playsInline preload="metadata" poster="/examples/first-video.png" style={{ width: '100%', borderRadius: '12px' }} aria-label="Reference title card rendered with Pellicule">
-  <source src="/examples/first-video.mp4" type="video/mp4" />
-  <a href="/examples/first-video.mp4">Download the reference video</a>
-</video>
-
-This is the tested reference result. Your agent's design may differ; check the timing, dimensions, and file rather than expecting identical pixels. [Download the reference component](/examples/Video.vue) if you want to reproduce this exact design.
-
-## If you get stuck
-
-- **The agent cannot see the skill:** confirm installation completed in this project folder, start a fresh session there, and ask it to use `pellicule`.
-- **FFmpeg is missing:** install it for your operating system, then ask your agent to check `ffmpeg -version` again.
-- **Chromium is missing:** ask the agent to run `npx playwright install chromium` inside the video project.
-- **The render fails:** paste the actual error back to your agent. It should report the failed command and resolve that error before claiming success.
-
-Next, [ask for a longer version or a different format](/guides/timing-and-output). The [manual guide](/guides/edit-the-source) is available if you want to inspect or edit the code yourself.
+Next, [make a six-second logo reveal and change the sound](/guides/timing-and-output).

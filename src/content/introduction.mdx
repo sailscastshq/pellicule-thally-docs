@@ -1,27 +1,33 @@
 ---
 title: Pellicule
-description: Describe the video you want. Your agent builds it with Pellicule. No Vue experience required.
+description: Pellicule turns Vue components into MP4 videos. Make animations, product intros and reusable video templates with code.
 mode: home
 ---
-<Hero title="Pellicule" subtitle="Describe the video you want. Your agent builds it with Pellicule. No Vue experience required." primaryLabel="Make your first video" primaryHref="/quickstart" />
+<Hero title="Pellicule" subtitle="Turn Vue components into MP4 videos. Make animations, product intros and reusable video templates with code." primaryLabel="Make your first video" primaryHref="/quickstart" />
 
-<video controls playsInline preload="metadata" poster="/examples/first-video.png" style={{ width: '100%', borderRadius: '12px' }} aria-label="A three-second title card rendered with Pellicule">
-  <source src="/examples/first-video.mp4" type="video/mp4" />
-  <a href="/examples/first-video.mp4">Watch the example MP4</a>
+<video controls playsInline preload="metadata" poster="/examples/pellicule-intro.png" style={{ width: '100%' }} aria-label="A 30-second Pellicule film with an original instrumental soundtrack">
+  <source src="/examples/pellicule-intro.mp4" type="video/mp4" />
+  <a href="/examples/pellicule-intro.mp4">Download the 30-second film</a>
 </video>
 
-## From an idea to an MP4
+Press play for sound. The green bars become the `ll` in Pellicule, move through a short animation, and return to the wordmark. The [quickstart](/quickstart) renders this exact film, including its original soundtrack.
 
-Make a product intro, an announcement, or a reusable video template with a coding agent. Install Pellicule's official skill, describe what you want, and have your agent create and render the video locally.
+## Who is it for?
 
-The skill gives your agent Pellicule's setup, animation, timing, and rendering guidance. Pellicule uses Vue underneath; your agent can write the components for you. You direct the result and review the finished video.
+Use Pellicule when you want a video you can edit and render again: a product announcement, a logo animation, or a template with changing text and colors.
 
-## Start small, then refine
+If you write Vue, you can build the scene directly. If you prefer to describe what you want, a coding agent—an assistant such as Codex, Claude Code or Cursor that edits files and runs commands—can write it for you. Pellicule's official skill gives that assistant the rendering and animation instructions. You do not need Vue experience to follow this guide.
 
-[Make your first video](/quickstart) with a copyable prompt and a three-second output. You need a coding agent that can work with local files and a terminal, Node.js, and FFmpeg. You do not need an existing Vue app.
+## How does it work?
 
-Then [change the timing and output](/guides/timing-and-output) with follow-up prompts. If you prefer to work directly in code, the [manual example](/guides/edit-the-source) includes the complete tested component.
+A Vue component describes what appears in the video. Pellicule renders it in a browser, one frame at a time, then uses FFmpeg to encode those frames into an MP4. The current frame number drives the animation, so you control when each movement starts and stops.
 
-Pellicule captures frames in a browser and encodes them with FFmpeg. Your project stays editable, so you can ask for another variation without starting over.
+You need Node.js, FFmpeg and a Chromium browser for rendering. There is no existing Vue application to set up for this standalone example.
 
-[Official agent skill](https://github.com/sailscastshq/pellicule/tree/main/skills) · [Full Pellicule documentation](https://docs.sailscasts.com/pellicule)
+## Make something you can keep
+
+[Make your first video](/quickstart) from the downloadable project. You will have a 30-second MP4 with a logo reveal, animated typography and sound, plus the source to change it.
+
+Then [export a shorter version and adjust the sound](/guides/timing-and-output). To see how the animation works, [read the scene](/guides/edit-the-source).
+
+[Official Pellicule documentation](https://docs.sailscasts.com/pellicule) · [Source and agent skill](https://github.com/sailscastshq/pellicule)

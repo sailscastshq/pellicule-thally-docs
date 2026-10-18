@@ -1,66 +1,70 @@
 ---
-title: Adjust timing and output
-description: Make a longer title card without confusing frames with seconds.
+title: Adjust timing and sound
+description: Export a six-second logo reveal from the full film, then control timing and audio deliberately.
 ---
-Start with the video from the [quickstart](/quickstart). You can ask your agent for a change, then review the new MP4.
+Start with the project from the [quickstart](/quickstart). You have a 30-second film; this guide exports its opening as a short logo reveal and explains what changes when you adjust timing or sound.
 
-## Ask for a six-second version
+## Export just the logo reveal
+
+From the folder containing `Video.vue` and `soundtrack.wav`, make a six-second soundtrack with a one-second fade, then render:
+
+```bash
+ffmpeg -y -i soundtrack.wav -t 6 -af afade=t=out:st=5:d=1 logo-sound.wav
+npx pellicule Video.vue -d 900 -r 0:180 -f 30 -w 1280 -h 720 -a logo-sound.wav -o logo-reveal.mp4
+```
+
+`-d 900` keeps the full scene's frame range. `-r 0:180` captures frames 0–179, giving you six seconds at 30 fps. The bars still become the `ll` in the wordmark at the same speed; the later scenes are simply left out. Because this range starts at zero, the soundtrack begins at the same point as the full film. The FFmpeg step shortens the score and fades it out before the cut.
+
+In the tested Pellicule 0.4.0 release, passing the full 30-second WAV to this short frame range kept the MP4 container at 30 seconds, even though it had only 180 video frames. Trimming the sound first makes the delivered file six seconds long.
+
+[Watch the tested six-second version](/examples/logo-reveal.mp4). To confirm your output:
+
+```bash
+ffprobe -v error -show_entries stream=codec_type,codec_name,nb_frames,r_frame_rate -show_entries format=duration -of json logo-reveal.mp4
+```
+
+Expect H.264 video, 180 video frames, `30/1` fps, an AAC audio stream and a duration of six seconds.
+
+## Change the words without changing the timing
+
+Open `Video.vue`. In the second scene, replace `Make an idea` with `Make your story`. Keep the second line, `move.`, short. Render the opening range to check the logo, then render the full film to review the changed scene.
+
+A coding agent can make this edit if you prefer. Tell it which text to change, which timing to preserve, and which output to render. The [source guide](/guides/edit-the-source) explains the frame ranges.
+
+## Use frames, not wall-clock time
+
+At 30 fps:
 
 ```text
-Use the pellicule skill. Make a six-second version of my title card at 30 fps.
-Keep the entrance animation at the same speed and extend the hold at the end.
-Render it to six-seconds.mp4 and verify the duration before returning its path.
+frames = seconds × 30
+seconds = frames ÷ 30
 ```
 
-The tested command below does this by extending the capture to 180 frames. The remaining sections explain the timing if you or your agent want to inspect it.
+The opening morph uses frames 40–100, so it lasts two seconds. Changing the output to 60 fps without changing those frame numbers would make that motion last one second. To preserve the timing at another frame rate, scale **all** scene boundaries and animation ranges, not just the output duration. The supplied renders use 30 fps; a 60-fps adaptation is not claimed as tested.
 
-## Make a six-second version
+Avoid `setTimeout`, current timestamps and unseeded randomness in the component. Pellicule may render a frame faster or slower than playback; the frame number must determine what appears.
 
-Keep 30 fps and double the frame count:
+## Change or remove the sound
+
+The soundtrack is made by `make-sound.mjs`. The first four `note` calls define the opening phrase; their first argument is the start time in seconds. Keep those starts aligned with the reveal, then run the script again and rerender.
+
+To make a silent version, omit the audio flag:
 
 ```bash
-npx pellicule Video.vue -d 180 -f 30 -w 1280 -h 720 -o six-seconds.mp4
+npx pellicule Video.vue -d 900 -r 0:180 -f 30 -w 1280 -h 720 -o logo-reveal-silent.mp4
 ```
 
-The fade still takes 20 frames, approximately two-thirds of a second. The extra frames extend the visible hold at the end; they do not slow the fade.
+For your own WAV or MP3, replace `soundtrack.wav` after checking your rights to use it. For a different output duration, prepare the audio to that duration explicitly; do not assume this tested version will trim a longer track. This example's original synthesized score and its generator are included under the [example license](/examples/LICENSE.txt); the Pellicule mark remains brand artwork.
 
-## Keep the fade duration when changing fps
+## Troubleshoot the result
 
-At 60 fps, the original 20-frame fade lasts approximately one-third of a second. To retain a two-thirds-second fade, change both interpolation input ranges from `[0, 20]` to `[0, 40]`.
+| Result | Likely next step |
+| --- | --- |
+| Six-second file contains a later scene | Check that the range is `0:180`, not a later start frame. |
+| Animation speeds up after changing fps | Scale every frame-based boundary, or return to 30 fps. |
+| File duration is longer than the captured frames | Check the audio duration. Trim and fade the WAV to match before rendering. |
+| Sound ends abruptly | Fade the sound source before the cut, then rerender. A frame range does not rearrange the score. |
+| Audio changes do not appear | Regenerate `soundtrack.wav`, then render a new MP4; changing the script alone does not update either file. |
+| Text wraps or clips in another format | This scene is composed for 1280 × 720. Reposition and resize elements before exporting a portrait layout. |
 
-For a three-second output at 60 fps, set duration to 180 frames. The relationship is:
-
-```text
-frames = seconds × fps
-seconds = frames ÷ fps
-```
-
-This 60-fps variation is explained from the frame model; the verified output in this assessment uses 30 fps.
-
-## Change the canvas deliberately
-
-The example centers its content and uses percentage dimensions for the canvas. For portrait or smaller exports, check text size and line wrapping at the target dimensions rather than assuming a landscape layout will fit.
-
-Keep the three-second 1280 × 720 render as your baseline while editing. Change one variable at a time: content, timing, then dimensions.
-
-## Make each frame predictable
-
-Use frame-driven computed values for movement. Avoid `setTimeout`, unseeded random values, current timestamps, and network content that changes between renders. Prefer local assets and wait for fonts or images to load before relying on them.
-
-The first-video example uses system fonts and no remote assets to keep this first success small.
-
-## Confirm the longer file
-
-```bash
-ffprobe -v error -show_entries stream=width,height,r_frame_rate,nb_frames -show_entries format=duration -of json six-seconds.mp4
-```
-
-Expect 180 frames, `30/1`, and `6.000000` seconds. Compare it with the baseline: the entrance should look the same, followed by a longer hold.
-
-For flags beyond these examples, run:
-
-```bash
-npx pellicule --help
-```
-
-Use the [official integration documentation](https://docs.sailscasts.com/pellicule) when moving into an existing Vite, Rsbuild, Nuxt, or Quasar app. Start with the standalone example before adding framework configuration.
+Run `npx pellicule --help` for the flags supported by your installed version. For integrating with an existing app, use the [official Pellicule documentation](https://docs.sailscasts.com/pellicule).
